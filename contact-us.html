@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bo'lanish</title>
+
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('assets/images/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            z-index: 0;
+            filter: blur(5px);
+        }
+
+        .form-container {
+            max-width: 500px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.25);
+            z-index: 1;
+            position: relative;
+        }
+
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .form-container button:hover {
+            background: #0056b3;
+        }
+
+        .navbar {
+            background: rgba(0, 0, 0, 0.8);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 2;
+        }
+
+        .navbar-nav .nav-link {
+            color: white !important;
+            transition: color 0.3s;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #007bff !important;
+        }
+
+        .navbar-brand {
+            color: #fff !important;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Фоновое изображение с размытием -->
+    <div class="background-image"></div>
+
+    <!-- Верхнее меню -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">Men bilan bog'lanish</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Uy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="browse.html">Proektlar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="profile.html">Bog'lanish</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contact Form -->
+    <div class="form-container">
+        <h2>Bog'lanish formasi</h2>
+        <form id="contactForm">
+            <div class="mb-3">
+                <label for="name" class="form-label">Ism:</label>
+                <input type="text" id="name" name="name" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="phone" class="form-label">Telefon:</label>
+                <input type="tel" id="phone" name="phone" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="request" class="form-label">So'rov:</label>
+                <textarea id="request" name="request" class="form-control" rows="4" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Yuborish</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const token = '6349956622:AAEE03DxYnh_yGbj1lzx46B-hK3W9yZfff0';
+            const chatId = '5767358437';
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const request = document.getElementById('request').value;
+
+            const message = `Yangi so'rov:\nIsm: ${name}\nEmail: ${email}\nTelefon: ${phone}\nSo'rov: ${request}`;
+
+            fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Tarmoq javobi to‘g‘ri emas ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.ok) {
+                        alert('Xabar muvaffaqiyatli yuborildi!');
+                        document.getElementById('contactForm').reset();
+                    } else {
+                        alert('Xabarni yuborishda xatolik yuz berdi. ' + (data.description || ''));
+                    }
+                })
+                .catch(error => {
+                    console.error('Xatolik:', error);
+                    alert('Xabarni yuborishda xatolik yuz berdi: ' + error.message);
+                });
+        });
+    </script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
